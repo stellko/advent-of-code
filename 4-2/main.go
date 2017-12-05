@@ -4,49 +4,78 @@ import "fmt"
 import "strings"
 import "os"
 import "bufio"
-
+import "sort"
 
 func main() {   
 
     sum := 0
     lines := getInput()
+    linesWithoutDuplicates := []string{}
 
     for _, line := range lines {
         values := strings.Split(line, "\t")
 
         for _, value := range values {
+            
             if !hasDuplicates(strings.Fields(value)) {
-                sum++
+                linesWithoutDuplicates = append(linesWithoutDuplicates, value)
             }
-        } 
-	}
+        }
+    }
+
+    for _, value := range linesWithoutDuplicates {
+        if !hasAnagram(strings.Fields(value)) {
+            sum++
+        }
+    }
 
 	fmt.Println(sum)
 }
 
-func hasDuplicates(elements []string) bool {
-    result := []string{}
+type sortRunes []rune
 
+func (s sortRunes) Less(i, j int) bool {
+    return s[i] < s[j]
+}
+
+func (s sortRunes) Swap(i, j int) {
+    s[i], s[j] = s[j], s[i]
+}
+
+func (s sortRunes) Len() int {
+    return len(s)
+}
+
+func SortString(s string) string {
+    r := []rune(s)
+    sort.Sort(sortRunes(r))
+    return string(r)
+}
+
+func hasAnagram(elements []string) bool {
+    
     for i := 0; i < len(elements); i++ {
-        exists := false
         for v := 0; v < i; v++ {
-            if elements[v] == elements[i] {
-                exists = true
+            sortedWeerd := SortString(elements[v])
+            sortedOtherWord := SortString(elements[i])
+            if sortedWeerd == sortedOtherWord {
                 return true
             }
-        }
-
-        if !exists {
-            result = append(result, elements[i])
-        } else {
-            return true
         }
     }
     return false
 }
 
-func hasAnagram(elements []string) bool {
-
+func hasDuplicates(elements []string) bool {
+    
+    for i := 0; i < len(elements); i++ {
+        for v := 0; v < i; v++ {
+            if elements[v] == elements[i] {
+                return true
+            }
+        }
+    }
+    return false
 }
 
 func getInput() []string {

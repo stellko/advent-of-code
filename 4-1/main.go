@@ -25,7 +25,6 @@ func main() {
 }
 
 func hasDuplicates(elements []string) bool {
-    result := []string{}
 
     for i := 0; i < len(elements); i++ {
         exists := false
@@ -36,9 +35,7 @@ func hasDuplicates(elements []string) bool {
             }
         }
 
-        if !exists {
-            result = append(result, elements[i])
-        } else {
+        if exists {
             return true
         }
     }
